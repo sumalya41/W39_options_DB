@@ -61,7 +61,49 @@ The feed is a Databento MBO options dataset (Euro FX options / futures) rather t
 | ⚙️ **Configuration** | Frozen configuration in `config/config.yaml`, operates by whole-session splits |
 
 ---
+## 📂 Repository Structure
+The codebase enforces a strict functional architecture. The core logic lives in src/options_research/ as pure functions with no mutable state, while scripts/ serves as a thin driver layer.
 
+options/
+├── config/
+│   └── config.yaml                 # frozen run config (splits, costs, thresholds, seed)
+├── data/
+│   ├── databento_options_clean.parquet   # raw, read-only, never modified (Rule 6)
+│   └── derived/                    # every cleaned/derived/new-column dataset: a new parquet
+│       └── <step_name>.parquet     #   (or session_date=.../ partitions), never overwrites raw
+├── src/
+│   └── options_research/           # pure-function package, no mutable module state
+│       ├── __init__.py
+│       ├── config.py               # load_config(path) -> frozen Config (pydantic, immutable)
+│       ├── memguard.py             # pure budget/limit functions + check() boundary guard
+│       ├── io/
+│       │   ├── lazyio.py           # scan_parquet/project/collect_stream — all pure, lazy-in/out
+│       │   └── inventory.py        # describe_schema, sample_rows, null_counts (read-only)
+│       ├── symbols.py              # parse_symbol, build_contract_key — pure string -> record
+│       ├── contracts.py            # build_symbology_map, coverage_table — DataFrame -> DataFrame
+│       ├── mbo/
+│       │   └── book.py             # replay_stream: O(1)-memory generator, reduce(events) -> BBO rows
+│       ├── stats/
+│       │   ├── timeseries.py       # log_returns, adf_test, acf, hac_ols — pure, return-based
+│       │   └── lopez_de_prado.py   # frac_diff, cusum_filter, purge_embargo_mask — pure
+│       ├── research/
+│       │   ├── returns.py          # return-based feature construction (never raw price)
+│       │   └── grid.py             # build_decision_grid, asof_join_backward — pure, causal
+│       ├── eda/
+│       │   └── exhibits.py         # aggregate -> small DataFrame (plotting is a thin edge)
+│       └── strategy/
+│           ├── signals.py          # signal(returns, threshold) -> +1/0/-1, pure
+│           ├── select.py           # select_contract(candidates, rules) -> contract_key, pure
+│           ├── execute.py          # simulate_fill(order, quotes) -> Fill, pure
+│           └── ledger.py           # fold_trades(events) -> ledger rows, pure
+├── tests/                          # pytest, one test module per pure-function module
+├── scripts/                        # thin driver scripts only: parse args, call pure functions, write output
+├── outputs/
+│   └── phaseNN/                    # facts_stepNN.json, data_dictionary.csv, CSVs per phase
+├── requirements.txt
+├── report.md                       # running results log, one section per phase, numbers only
+└── todo.md
+---
 ## 🏗️ Run Order
 
 The project executes as a deterministic 10-phase pipeline:
