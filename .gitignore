@@ -1,0 +1,21 @@
+# Python environment
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+
+# Large/generated project artifacts
+data/
+prompt/
+outputs/
+
+# Common local/editor noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
