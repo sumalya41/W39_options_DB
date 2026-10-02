@@ -140,7 +140,7 @@ pytest tests/test_phase10_verification.py -q → 6 passed ✅
 
 ## 🤖 AI-Use Statement
 
-> This project used AI assistance as a coding and reasoning aid during implementation, but every analytical decision and numerical conclusion was checked against generated project artifacts and the rulebook in `todo.md` and `prompt/eurex_options_strategy_playbook(1).md`. The final report uses only values originating from the generated facts, figures, and ledger outputs in the project. No numerical claim in the report was invented beyond those generated artifacts.
+> This project used AI assistance as a coding implementation, but every analytical decision and numerical conclusion was checked against generated project artifacts  The final report uses only values originating from the generated facts, figures, and ledger outputs in the project. No numerical claim in the report was invented beyond those generated artifacts.
 
 ---
 
