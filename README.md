@@ -63,7 +63,7 @@ The feed is a Databento MBO options dataset (Euro FX options / futures) rather t
 ---
 ## 📂 Repository Structure
 The codebase enforces a strict functional architecture. The core logic lives in src/options_research/ as pure functions with no mutable state, while scripts/ serves as a thin driver layer.
-
+'''
 options/
 ├── config/
 │   └── config.yaml                 # frozen run config (splits, costs, thresholds, seed)
@@ -103,6 +103,7 @@ options/
 ├── requirements.txt
 ├── report.md                       # running results log, one section per phase, numbers only
 └── todo.md
+'''
 
 ---
 ## 🏗️ Run Order
